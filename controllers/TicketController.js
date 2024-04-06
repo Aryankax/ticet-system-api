@@ -1,5 +1,7 @@
 const Ticket = require('../models/ticket/Ticket.schema');
+const colleague = require('../models/ticket/colleagueSchema');
 require('dotenv').config();
+
 const nodemailer = require('nodemailer');
 
 const createTicket = async(req,res)=> {
@@ -34,7 +36,9 @@ const transporter = nodemailer.createTransport({
 
 const updateTicket = async (req, res) => {
     try {
-        const { ticketId, sender, message } = req.body;
+        const { ticketId, sender, message,} = req.body;
+
+        const representative = await colleague.findById()
 
         const ticket = await Ticket.findById(ticketId);
 

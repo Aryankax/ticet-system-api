@@ -5,6 +5,10 @@ const TicketSchema = new Schema({
     clientId : {
         type: Schema.Types.ObjectId,
     },
+    colleagueId : {
+        type: Schema.Types.ObjectId,
+        default: "000"
+    },
     subject: {
         type: String,
         maxlength: 100,
