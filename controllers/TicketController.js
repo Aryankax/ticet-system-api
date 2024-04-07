@@ -6,10 +6,11 @@ const nodemailer = require('nodemailer');
 
 const createTicket = async(req,res)=> {
     try{
-        const { clientId, subject, status, conversation } = req.body;
+        const { clientId, subject, status, conversation, colleagueId} = req.body;
 
         const newTicket = new Ticket({
             clientId,
+            colleagueId,
             subject,
             status,
             openAt: Date.now(),
@@ -36,9 +37,9 @@ const transporter = nodemailer.createTransport({
 
 const updateTicket = async (req, res) => {
     try {
-        const { ticketId, sender, message,} = req.body;
+        const { ticketId, sender, message, } = req.body;
 
-        const representative = await colleague.findById()
+        // const representative = await colleague.findById()
 
         const ticket = await Ticket.findById(ticketId);
 

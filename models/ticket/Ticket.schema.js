@@ -7,7 +7,6 @@ const TicketSchema = new Schema({
     },
     colleagueId : {
         type: Schema.Types.ObjectId,
-        default: "000"
     },
     subject: {
         type: String,
