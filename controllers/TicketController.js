@@ -18,10 +18,10 @@ const createTicket = async(req,res)=> {
 
         await newTicket.save();
 
-        res.status(201).json(newTicket);
+        res.status(200).json({ticketData: newTicket, code: '200'});
     } catch(error){
         console.error(error);
-        res.status(500).json({message: 'Failed to create ticket'})
+        res.status(200).json({message: 'Failed to create ticket', code: '500'});
     }
 }
 
@@ -43,7 +43,7 @@ const updateTicket = async (req, res) => {
         const ticket = await Ticket.findById(ticketId);
 
         if (!ticket) {
-            return res.status(400).json({ message: 'Ticket not found' });
+            return res.status(200).json({ message: 'Ticket not found', code: '400'});
         }
 
         // Update ticket
@@ -62,10 +62,10 @@ const updateTicket = async (req, res) => {
 
         await ticket.save();
 
-        res.status(200).json(ticket);
+        res.status(200).json({ticketData: ticket, code: '200'});
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Failed to update ticket' });
+        res.status(200).json({ message: 'Failed to update ticket', code: '500'});
     }
 };
 
@@ -93,14 +93,14 @@ const getTicketDetails = async (req, res) => {
         const ticket = await Ticket.findById(ticketID);
 
         if (!ticket) {
-            return res.status(404).json({ message: 'Ticket not found' });
+            return res.status(200).json({ message: 'Ticket not found', code: '404'});
         }
 
-        res.status(200).send(ticket);
+        res.status(200).send({ticketData: ticket, code: '200'});
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Failed to fetch ticket details' });
+        res.status(200).json({ message: 'Failed to fetch ticket details', code: '500'});
     }
 };
 
@@ -113,13 +113,13 @@ const getAllTickets = async (req, res) => {
 
         // Check if tickets are found
         if (!tickets || tickets.length === 0) {
-            return res.status(404).json({ message: 'Tickets not found' });
+            return res.status(200).json({ message: 'Tickets not found', code: '404'});
         }
 
-        res.status(200).json(tickets);
+        res.status(200).json({ticketData: tickets, code: '200'});
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Failed to fetch all tickets by the specified user' });
+        res.status(200).json({ message: 'Failed to fetch all tickets by the specified user', code: '500'});
     }
 };
 
@@ -130,7 +130,7 @@ const closeTicket = async(req,res)=>{
         const ticket = await Ticket.findById(ticketId);
 
         if(!ticket){
-            return res.status(400).json({message: 'Ticket not found'});
+            return res.status(200).json({message: 'Ticket not found', code: '400'});
         }
 
         ticket.status = 'closed';
@@ -138,12 +138,12 @@ const closeTicket = async(req,res)=>{
         await ticket.save();
 
         res.status(200).json({message: 'Ticket closed successfully', 
-        ticketDetail: ticket,
+        ticketDetail: ticket, code: '200'
     })
         
     } catch(error){
         console.log(error);
-        res.status(500).json({message: 'Failed to close ticket'});
+        res.status(200).json({message: 'Failed to close ticket', code: '500'});
     }
 }
 
