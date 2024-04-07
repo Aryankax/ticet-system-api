@@ -1,5 +1,6 @@
 const Ticket = require('../models/ticket/Ticket.schema');
 const colleague = require('../models/ticket/colleagueSchema');
+const user = require('../models/ticket/userSchema')
 require('dotenv').config();
 
 const nodemailer = require('nodemailer');
@@ -37,14 +38,16 @@ const transporter = nodemailer.createTransport({
 
 const updateTicket = async (req, res) => {
     try {
-        const { ticketId, sender, message, } = req.body;
+        const { ticketId, sender, message } = req.body;
 
-        // const representative = await colleague.findById()
+        console.log(req.body)
+
+        console.log(ticketId)
 
         const ticket = await Ticket.findById(ticketId);
 
         if (!ticket) {
-            return res.status(200).json({ message: 'Ticket not found', code: '400'});
+            return res.status(404).json({ message: 'Ticket not found', code: '404' });
         }
 
         // Update ticket
@@ -52,23 +55,30 @@ const updateTicket = async (req, res) => {
             ticket.conversations.push({ sender, message });
 
             // Send email notification to representative
-            await sendEmailNotification('representative@example.com', 'Customer has updated the ticket');
+            const colleagueUser = await colleague.findById(ticket.colleagueId);
+            const representativeEmail = colleagueUser.email;
+            console.log(representativeEmail);
+            await sendEmailNotification(representativeEmail, 'Customer has updated the ticket');
         } else if (sender === 'representative') {
             ticket.conversations.push({ sender, message });
             ticket.status = 'pending';
 
             // Send email notification to customer
-            await sendEmailNotification('kackeraryan@gmail.com', 'Representative has updated the ticket');
+            const clientUser = await user.findById(ticket.clientId);
+            const customerEmail = clientUser.email;
+            console.log(customerEmail);
+            await sendEmailNotification(customerEmail, 'Representative has updated the ticket');
         }
 
         await ticket.save();
 
-        res.status(200).json({ticketData: ticket, code: '200'});
+        res.status(200).json({ ticketData: ticket, code: '200' });
     } catch (error) {
-        console.error(error);
-        res.status(200).json({ message: 'Failed to update ticket', code: '500'});
+        console.error('Error updating ticket:', error);
+        res.status(500).json({ message: 'Failed to update ticket', code: '500' });
     }
 };
+
 
 // Function to send email notification
 const sendEmailNotification = async (recipient, message) => {
